@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-data class RollVisible(var value: Int, var visible: Boolean) {
+data class RollVisible(val value: Int, val visible: Boolean) {
     companion object {
         fun superior(value: Int, v: Int): Boolean = value >= v;
     }
