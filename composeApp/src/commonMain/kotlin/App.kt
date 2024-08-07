@@ -1,3 +1,5 @@
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -9,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -111,12 +114,12 @@ private fun reRoll(
 
 @Composable
 fun RollResult(rolls: List<RollVisible>) {
-    val diceSize = 10.dp
+    val diceSize = 100.dp
     LazyVerticalGrid(
-        contentPadding = PaddingValues(horizontal = 50.dp, vertical = 50.dp),
         columns = GridCells.Adaptive(minSize = 128.dp),
-        verticalArrangement = Arrangement.spacedBy(diceSize),
-        horizontalArrangement = Arrangement.spacedBy(diceSize),
+modifier = Modifier.padding(all=10.dp).border(1.dp, Color.Green),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
 
     ) {
         items(rolls.size) { index ->
@@ -125,12 +128,16 @@ fun RollResult(rolls: List<RollVisible>) {
                 colors = CardDefaults.cardColors(
                     containerColor = if (roll.visible) MaterialTheme.colors.primarySurface else MaterialTheme.colors.secondary,
                 ),
-
+border = BorderStroke(1.dp, MaterialTheme.colors.primary),
 
                 modifier = Modifier
-                    .height(diceSize)
-                    .padding(diceSize)
-                    .aspectRatio(1f)
+                    .size(width = diceSize, height = diceSize)
+                    .padding(16.dp),
+//                    .border(1.dp, Color.Black)
+//                    .aspectRatio(1f)
+//                    .border(1.dp, Color.Green)
+//                    .padding(diceSize*3)
+//                    .border(1.dp, Color.Blue)
 
             ) {
                 Text(" ${roll.value} ${roll.visible}")
