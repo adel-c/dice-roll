@@ -99,7 +99,8 @@ fun App() {
             },
         ) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                RollResult(rolls)
+                RollResult(rolls, filterValue)
+                DiceDisplay(rolls)
             }
 
         }
@@ -115,9 +116,16 @@ private fun reRoll(
     updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, RollVisible.superior(it,filtreValue)) })
 }
 
+@Composable
+fun RollResult(rolls: List<RollVisible>, filtreValue: Int) {
+
+    Text("Sum : ${rolls.sumOf { it.value }}")
+    Text("Sum Successful roll : ${rolls.filter { it.visible }.sumOf { it.value }}")
+    Text("Number of Success ${rolls.filter { it.visible }.size}")
+}
 
 @Composable
-fun RollResult(rolls: List<RollVisible>) {
+fun DiceDisplay(rolls: List<RollVisible>) {
     val diceSize = 40.dp
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
