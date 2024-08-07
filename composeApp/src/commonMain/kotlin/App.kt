@@ -1,15 +1,11 @@
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.TextField
+import androidx.compose.material.primarySurface
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -107,12 +103,32 @@ private fun reRoll(
 
 @Composable
 fun RollResult(rolls: List<RollVisible>) {
+    val diceSize = 10.dp
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp)
+        contentPadding = PaddingValues(horizontal = 50.dp, vertical = 50.dp),
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        verticalArrangement = Arrangement.spacedBy(diceSize),
+        horizontalArrangement = Arrangement.spacedBy(diceSize)
     ) {
         items(rolls.size) { index ->
             val roll = rolls[index]
-            Text(" ${roll.value} ${roll.visible}")
+            ElevatedCard(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colors.primarySurface,
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+
+                modifier = Modifier
+                    .height(diceSize)
+                    .padding(diceSize)
+                    .aspectRatio(1f)
+
+            ) {
+                Text(" ${roll.value} ${roll.visible}")
+            }
+
         }
     }
 
