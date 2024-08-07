@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class RollVisible(var value: Int, var visible: Boolean) {
-    fun superior(v: Int): Boolean = v >= value;
+    fun superior(v: Int): Boolean = value >= v;
 }
 @Composable
 @Preview
@@ -23,7 +23,7 @@ fun App() {
         var (selectedDice ,updateDice) = remember { mutableStateOf(Dice.SIX) }
         var nbRolls by remember { mutableStateOf(6) }
         var (rolls, updateRolls) = remember { mutableStateOf(listOf<RollVisible>()) }
-        var filterValue by remember { mutableStateOf(1) }
+        var filterValue by remember { mutableStateOf(4) }
         PermanentNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
@@ -48,7 +48,7 @@ fun App() {
                             label = { Text("Number of Rolls") }
                         )
                         Button(onClick = {
-                            reRoll(updateRolls, selectedDice, nbRolls)
+                            reRoll(updateRolls, selectedDice, nbRolls,filterValue)
                         }) { Text("Roll") }
 
                         TextField(
@@ -71,7 +71,7 @@ fun App() {
 
                         Button(onClick = {
                             nbRolls = rolls.filter { r -> r.superior(filterValue)}.count()
-                            reRoll(updateRolls, selectedDice, nbRolls)
+                            reRoll(updateRolls, selectedDice, nbRolls, filterValue)
                         }) { Text("Reroll") }
 
                     }
@@ -89,9 +89,10 @@ fun App() {
 private fun reRoll(
     updateRolls: (List<RollVisible>) -> Unit,
     selectedDice: Dice,
-    nbRolls: Int
+    nbRolls: Int,
+    filtreValue: Int,
 ) {
-    updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, true) })
+    updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, it>=filtreValue) })
 }
 
 
