@@ -1,30 +1,29 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material3.*
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import diceroller.composeapp.generated.resources.Res
-import diceroller.composeapp.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
+data class RollVisible(var value: Int, var visible: Boolean) {
+    fun superior(v: Int): Boolean = v >= value;
+}
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         var (selectedDice ,updateDice) = remember { mutableStateOf(Dice.SIX) }
-        var nbRolls by remember { mutableStateOf(1) }
-        var rolls by remember { mutableStateOf(listOf<Int>()) }
-
+        var nbRolls by remember { mutableStateOf(6) }
+        var (rolls, updateRolls) = remember { mutableStateOf(listOf<RollVisible>()) }
+        var filterValue by remember { mutableStateOf(1) }
         PermanentNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
@@ -48,7 +47,33 @@ fun App() {
                             },
                             label = { Text("Number of Rolls") }
                         )
-                        Button(onClick = {rolls = selectedDice.roll(nbRolls)  }) { Text("Roll") }
+                        Button(onClick = {
+                            reRoll(updateRolls, selectedDice, nbRolls)
+                        }) { Text("Roll") }
+
+                        TextField(
+                            value = filterValue.toString(),
+                            onValueChange = {
+                                if (it.isBlank()) {
+                                    filterValue = 1
+                                } else {
+                                    val toIntOrNull = it.toIntOrNull()
+                                    if (toIntOrNull != null) {
+                                        filterValue = toIntOrNull
+                                    }
+                                }
+
+                                updateRolls(rolls.map { r -> r.copy(visible = r.superior( filterValue)) })
+
+                            },
+                            label = { Text("KeepOn") }
+                        )
+
+                        Button(onClick = {
+                            nbRolls = rolls.filter { r -> r.superior(filterValue)}.count()
+                            reRoll(updateRolls, selectedDice, nbRolls)
+                        }) { Text("Reroll") }
+
                     }
                 }
             },
@@ -61,14 +86,22 @@ fun App() {
     }
 }
 
+private fun reRoll(
+    updateRolls: (List<RollVisible>) -> Unit,
+    selectedDice: Dice,
+    nbRolls: Int
+) {
+    updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, true) })
+}
+
 
 @Composable
-fun RollResult(rolls:List<Int>) {
+fun RollResult(rolls: List<RollVisible>) {
 
     Column {
         rolls.forEach { roll ->
             Row{
-                Text(" $roll")
+                Text(" ${roll.value} ${roll.visible}")
             }
         }
 
