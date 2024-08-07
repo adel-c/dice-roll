@@ -24,16 +24,13 @@ fun App() {
         var (selectedDice ,updateDice) = remember { mutableStateOf(Dice.SIX) }
         var nbRolls by remember { mutableStateOf(1) }
         var rolls by remember { mutableStateOf(listOf<Int>()) }
-        a()
 
         PermanentNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
 
                     Column {
-//                        Button(onClick = { println("machin") }) { Text("truc") }
-//                        Button(onClick = { println("machin2") }) { Text("truc2") }
-//                        Button(onClick = { println("machin3") }) { Text("truc3") }
+
                         DiceSelector(selectedDice ,updateDice)
 
                         TextField(
@@ -57,40 +54,13 @@ fun App() {
             },
         ) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Button(onClick = { showContent = !showContent }) {
-
-                    Text("Selected $selectedDice")
-                }
                 RollResult(rolls)
-                AnimatedVisibility(showContent) {
-                    val greeting = remember {"machin"}
-                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(painterResource(Res.drawable.compose_multiplatform), null)
-                        Text("Compose: $greeting")
-                        LeftMenu()
-                    }
-                }
             }
 
         }
     }
 }
 
-@Composable
-fun LeftMenu() {
-    Column {
-        Button(onClick = { println("machin") }) {
-            Text("Left")
-        }
-    }
-}
-
-@Composable
-fun a() {
-
-
-
-}
 
 @Composable
 fun RollResult(rolls:List<Int>) {
@@ -120,47 +90,3 @@ fun DiceSelector(selectedDice: Dice, updateDice: (Dice) -> Unit) {
     }
 }
 
-@Composable
-fun Demo_DropDownMenu() {
-
-    var expanded by remember { mutableStateOf(true) }
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false }
-    ) {
-        DropdownMenuItem(
-            text = { Text("Load") },
-            onClick = { println("click load") }
-        )
-        DropdownMenuItem(
-            text = { Text("Save") },
-            onClick = { println("click save") }
-        )
-    }
-//
-//    Box(
-//        modifier = Modifier.fillMaxWidth()
-//            .wrapContentSize(Alignment.TopEnd)
-//    ) {
-//        IconButton(onClick = { expanded = !expanded }) {
-//            Icon(
-//                imageVector = Icons.Default.MoreVert,
-//                contentDescription = "More"
-//            )
-//        }
-//
-//        DropdownMenu(
-//            expanded = expanded,
-//            onDismissRequest = { expanded = false }
-//        ) {
-//            DropdownMenuItem(
-//                text = { Text("Load") },
-//                onClick = { println("click load") }
-//            )
-//            DropdownMenuItem(
-//                text = { Text("Save") },
-//                onClick = { println("click save") }
-//            )
-//        }
-//    }
-}
