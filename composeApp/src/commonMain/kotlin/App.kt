@@ -26,8 +26,16 @@ fun App() {
         var showContent by remember { mutableStateOf(false) }
         var (selectedDice ,updateDice) = remember { mutableStateOf(Dice.SIX) }
         var nbRolls by remember { mutableStateOf(6) }
-        var (rolls, updateRolls) = remember { mutableStateOf(listOf<RollVisible>()) }
+
         var filterValue by remember { mutableStateOf(4) }
+
+        var (rolls, updateRolls) = remember {
+            mutableStateOf(
+                selectedDice.roll(nbRolls).map { RollVisible(it, RollVisible.superior(it, filterValue)) }
+            )
+        }
+
+
         PermanentNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
@@ -108,17 +116,16 @@ fun RollResult(rolls: List<RollVisible>) {
         contentPadding = PaddingValues(horizontal = 50.dp, vertical = 50.dp),
         columns = GridCells.Adaptive(minSize = 128.dp),
         verticalArrangement = Arrangement.spacedBy(diceSize),
-        horizontalArrangement = Arrangement.spacedBy(diceSize)
+        horizontalArrangement = Arrangement.spacedBy(diceSize),
+
     ) {
         items(rolls.size) { index ->
             val roll = rolls[index]
-            ElevatedCard(
+            Card(
                 colors = CardDefaults.cardColors(
                     containerColor = if (roll.visible) MaterialTheme.colors.primarySurface else MaterialTheme.colors.secondary,
                 ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
-                ),
+
 
                 modifier = Modifier
                     .height(diceSize)
