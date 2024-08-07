@@ -13,7 +13,11 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 data class RollVisible(var value: Int, var visible: Boolean) {
-    fun superior(v: Int): Boolean = value >= v;
+    companion object {
+        fun superior(value: Int, v: Int): Boolean = value >= v;
+    }
+
+    fun superior(v: Int): Boolean = superior(value, v)
 }
 @Composable
 @Preview
@@ -70,7 +74,8 @@ fun App() {
                         )
 
                         Button(onClick = {
-                            nbRolls = rolls.filter { r -> r.superior(filterValue)}.count()
+
+                        nbRolls = rolls.filter { r -> r.superior(filterValue)}.count()
                             reRoll(updateRolls, selectedDice, nbRolls, filterValue)
                         }) { Text("Reroll") }
 
@@ -92,7 +97,7 @@ private fun reRoll(
     nbRolls: Int,
     filtreValue: Int,
 ) {
-    updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, it>=filtreValue) })
+    updateRolls(selectedDice.roll(nbRolls).map { RollVisible(it, RollVisible.superior(it,filtreValue)) })
 }
 
 
