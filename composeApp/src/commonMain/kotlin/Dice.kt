@@ -12,6 +12,3 @@ enum class Dice(private val values: List<Int>) {
     fun roll( rolls:Int=1 ):List<Int> = (0 until  rolls).map { randomValue() }
 }
 
-fun main() {
-    println(Dice.TWO.roll(5))
-}
