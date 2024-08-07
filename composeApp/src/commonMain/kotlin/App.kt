@@ -1,17 +1,21 @@
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.primarySurface
-import androidx.compose.material3.*
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -114,7 +118,7 @@ private fun reRoll(
 
 @Composable
 fun RollResult(rolls: List<RollVisible>) {
-    val diceSize = 50.dp
+    val diceSize = 40.dp
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         modifier = Modifier.fillMaxSize().border(1.dp, Color.Green),
@@ -125,23 +129,20 @@ fun RollResult(rolls: List<RollVisible>) {
     ) {
         items(rolls.size) { index ->
             val roll = rolls[index]
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = if (roll.visible) MaterialTheme.colors.primarySurface else MaterialTheme.colors.secondary,
-                ),
-border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-
+            Box(
                 modifier = Modifier
-                    .size(width = diceSize, height = diceSize)
-                //.padding(16.dp),
-//                    .border(1.dp, Color.Black)
-//                    .aspectRatio(1f)
-//                    .border(1.dp, Color.Green)
-//                    .padding(diceSize*3)
-//                    .border(1.dp, Color.Blue)
-
+                    .size(diceSize)
+                    .border(
+                        width = 4.dp, color = if (roll.visible) Blue else Red,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
+                contentAlignment = Alignment.Center
             ) {
-                Text(" ${roll.value} ${roll.visible}")
+                Text(
+                    text = "${roll.value}",
+                    textAlign = TextAlign.Center,
+                )
+                //...
             }
 
         }
