@@ -114,10 +114,11 @@ private fun reRoll(
 
 @Composable
 fun RollResult(rolls: List<RollVisible>) {
-    val diceSize = 100.dp
+    val diceSize = 50.dp
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
-modifier = Modifier.padding(all=10.dp).border(1.dp, Color.Green),
+        modifier = Modifier.fillMaxSize().border(1.dp, Color.Green),
+
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
 
@@ -132,7 +133,7 @@ border = BorderStroke(1.dp, MaterialTheme.colors.primary),
 
                 modifier = Modifier
                     .size(width = diceSize, height = diceSize)
-                    .padding(16.dp),
+                //.padding(16.dp),
 //                    .border(1.dp, Color.Black)
 //                    .aspectRatio(1f)
 //                    .border(1.dp, Color.Green)
