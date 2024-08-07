@@ -114,7 +114,7 @@ fun RollResult(rolls: List<RollVisible>) {
             val roll = rolls[index]
             ElevatedCard(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colors.primarySurface,
+                    containerColor = if (roll.visible) MaterialTheme.colors.primarySurface else MaterialTheme.colors.secondary,
                 ),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 6.dp
