@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -31,9 +33,9 @@ fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         var (selectedDice ,updateDice) = remember { mutableStateOf(Dice.SIX) }
-        var nbRolls by remember { mutableStateOf(6) }
+        var (nbRolls, nbRollsSetter) = remember { mutableStateOf(6) }
 
-        var filterValue by remember { mutableStateOf(4) }
+        var (filterValue, filterValueSetter) = remember { mutableStateOf(4) }
 
         var (rolls, updateRolls) = remember {
             mutableStateOf(
@@ -45,7 +47,7 @@ fun App() {
 
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 DiceSelector(selectedDice, updateDice)
-                rollOptions(nbRolls, updateRolls, selectedDice, filterValue, rolls)
+                rollOptions(nbRolls, nbRollsSetter, updateRolls, selectedDice, filterValue, filterValueSetter, rolls)
                 RollResult(rolls, filterValue)
                 DiceDisplay(rolls)
             }
@@ -57,57 +59,51 @@ fun App() {
 @Composable
 private fun rollOptions(
     nbRolls: Int,
+    nbRollsSetter: (Int) -> Unit,
     updateRolls: (List<RollVisible>) -> Unit,
     selectedDice: Dice,
     filterValue: Int,
+    filterValueSetter: (Int) -> Unit,
     rolls: List<RollVisible>
 ) {
-    var nbRolls1 = nbRolls
-    var filterValue1 = filterValue
     Row {
-        TextField(
-            value = nbRolls1.toString(),
-            onValueChange = {
-                if (it.isBlank()) {
-                    nbRolls1 = 1
-                } else {
-                    val toIntOrNull = it.toIntOrNull()
-                    if (toIntOrNull != null) {
-                        nbRolls1 = toIntOrNull
-                    }
-                }
-
-            },
-            label = { Text("Number of Rolls") }
-        )
+        numberField("Nb rolls", nbRolls, nbRollsSetter)
         Button(onClick = {
-            reRoll(updateRolls, selectedDice, nbRolls1, filterValue1)
+            reRoll(updateRolls, selectedDice, nbRolls, filterValue)
         }) { Text("Roll") }
-
-        TextField(
-            value = filterValue1.toString(),
-            onValueChange = {
-                if (it.isBlank()) {
-                    filterValue1 = 1
-                } else {
-                    val toIntOrNull = it.toIntOrNull()
-                    if (toIntOrNull != null) {
-                        filterValue1 = toIntOrNull
-                    }
-                }
-
-                updateRolls(rolls.map { r -> r.copy(visible = r.superior(filterValue1)) })
-
-            },
-            label = { Text("KeepOn") }
-        )
+        numberField("Nb rolls", filterValue, filterValueSetter) {
+            updateRolls(rolls.map { r -> r.copy(visible = r.superior(it)) })
+        }
 
         Button(onClick = {
 
-            nbRolls1 = rolls.filter { r -> r.superior(filterValue1) }.count()
-            reRoll(updateRolls, selectedDice, nbRolls1, filterValue1)
+            nbRollsSetter( rolls.filter { r -> r.superior(filterValue) }.count())
+            reRoll(updateRolls, selectedDice, nbRolls, filterValue)
         }) { Text("Reroll") }
     }
+}
+
+@Composable
+private fun numberField(placeHolder: String = "value", value: Int, setter: (Int) -> Unit, action: (Int) -> Unit = {}) {
+    TextField(
+        value = value.toString(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        onValueChange = {
+
+            if (it.isBlank()) {
+                setter(1)
+                action(1)
+            } else {
+                val toIntOrNull = it.toIntOrNull()
+                if (toIntOrNull != null) {
+                    setter(toIntOrNull)
+                    action(toIntOrNull)
+                }
+            }
+
+        },
+        label = { Text(placeHolder) }
+    )
 }
 
 private fun reRoll(
