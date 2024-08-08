@@ -6,9 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -129,7 +129,7 @@ fun DiceDisplay(rolls: List<RollVisible>) {
     val diceSize = 40.dp
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
-        modifier = Modifier.fillMaxSize().border(1.dp, Color.Green),
+        modifier = Modifier.fillMaxSize(),
 
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -162,14 +162,31 @@ fun DiceDisplay(rolls: List<RollVisible>) {
 @Composable
 fun DiceSelector(selectedDice: Dice, updateDice: (Dice) -> Unit) {
     val dices = Dice.entries
+    var expanded by remember { mutableStateOf(false) }
 
-    Column {
-        dices.forEach { dice ->
-            Row{
-                Button(onClick = { updateDice( dice) }) { Text(dice.name) }
-            }
+    Box(modifier = Modifier
+
+   ) {
+        Text("${selectedDice}")
+        IconButton(onClick = { expanded = true }) {
+            Icon(Icons.Default.MoreVert, contentDescription = "Localized description")
         }
-        Text("Selected $selectedDice")
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+
+        ) {
+            dices.forEach { dice ->
+                DropdownMenuItem(
+                    text = { Text("${dice}") },
+                    onClick = { updateDice(dice);expanded = false  })
+
+
+            }
+
+
+        }
     }
+    return
 }
 
