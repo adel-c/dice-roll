@@ -163,7 +163,7 @@ fun DiceDisplay(rolls: List<RollVisible>) {
 fun DiceSelector(selectedDice: Dice, updateDice: (Dice) -> Unit) {
     val dices = Dice.entries
     var expanded by remember { mutableStateOf(false) }
-    Row{
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text("Dice type ${selectedDice}")
         Box(modifier = Modifier
 
