@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.text.style.TextAlign
@@ -43,67 +42,71 @@ fun App() {
         }
 
 
-        PermanentNavigationDrawer(
-            drawerContent = {
-                ModalDrawerSheet {
 
-                    Column {
-
-                        DiceSelector(selectedDice ,updateDice)
-
-                        TextField(
-                            value = nbRolls.toString(),
-                            onValueChange = {
-                                if (it.isBlank()) {
-                                    nbRolls = 1
-                                } else {
-                                    val toIntOrNull = it.toIntOrNull()
-                                    if (toIntOrNull != null) {
-                                        nbRolls = toIntOrNull
-                                    }
-                                }
-
-                            },
-                            label = { Text("Number of Rolls") }
-                        )
-                        Button(onClick = {
-                            reRoll(updateRolls, selectedDice, nbRolls,filterValue)
-                        }) { Text("Roll") }
-
-                        TextField(
-                            value = filterValue.toString(),
-                            onValueChange = {
-                                if (it.isBlank()) {
-                                    filterValue = 1
-                                } else {
-                                    val toIntOrNull = it.toIntOrNull()
-                                    if (toIntOrNull != null) {
-                                        filterValue = toIntOrNull
-                                    }
-                                }
-
-                                updateRolls(rolls.map { r -> r.copy(visible = r.superior( filterValue)) })
-
-                            },
-                            label = { Text("KeepOn") }
-                        )
-
-                        Button(onClick = {
-
-                        nbRolls = rolls.filter { r -> r.superior(filterValue)}.count()
-                            reRoll(updateRolls, selectedDice, nbRolls, filterValue)
-                        }) { Text("Reroll") }
-
-                    }
-                }
-            },
-        ) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                DiceSelector(selectedDice, updateDice)
+                rollOptions(nbRolls, updateRolls, selectedDice, filterValue, rolls)
                 RollResult(rolls, filterValue)
                 DiceDisplay(rolls)
             }
 
-        }
+
+    }
+}
+
+@Composable
+private fun rollOptions(
+    nbRolls: Int,
+    updateRolls: (List<RollVisible>) -> Unit,
+    selectedDice: Dice,
+    filterValue: Int,
+    rolls: List<RollVisible>
+) {
+    var nbRolls1 = nbRolls
+    var filterValue1 = filterValue
+    Row {
+        TextField(
+            value = nbRolls1.toString(),
+            onValueChange = {
+                if (it.isBlank()) {
+                    nbRolls1 = 1
+                } else {
+                    val toIntOrNull = it.toIntOrNull()
+                    if (toIntOrNull != null) {
+                        nbRolls1 = toIntOrNull
+                    }
+                }
+
+            },
+            label = { Text("Number of Rolls") }
+        )
+        Button(onClick = {
+            reRoll(updateRolls, selectedDice, nbRolls1, filterValue1)
+        }) { Text("Roll") }
+
+        TextField(
+            value = filterValue1.toString(),
+            onValueChange = {
+                if (it.isBlank()) {
+                    filterValue1 = 1
+                } else {
+                    val toIntOrNull = it.toIntOrNull()
+                    if (toIntOrNull != null) {
+                        filterValue1 = toIntOrNull
+                    }
+                }
+
+                updateRolls(rolls.map { r -> r.copy(visible = r.superior(filterValue1)) })
+
+            },
+            label = { Text("KeepOn") }
+        )
+
+        Button(onClick = {
+
+            nbRolls1 = rolls.filter { r -> r.superior(filterValue1) }.count()
+            reRoll(updateRolls, selectedDice, nbRolls1, filterValue1)
+        }) { Text("Reroll") }
     }
 }
 
