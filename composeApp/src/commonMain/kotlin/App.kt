@@ -163,30 +163,32 @@ fun DiceDisplay(rolls: List<RollVisible>) {
 fun DiceSelector(selectedDice: Dice, updateDice: (Dice) -> Unit) {
     val dices = Dice.entries
     var expanded by remember { mutableStateOf(false) }
-
-    Box(modifier = Modifier
-
-   ) {
-        Text("${selectedDice}")
-        IconButton(onClick = { expanded = true }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "Localized description")
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false }
+    Row{
+        Text("Dice type ${selectedDice}")
+        Box(modifier = Modifier
 
         ) {
-            dices.forEach { dice ->
-                DropdownMenuItem(
-                    text = { Text("${dice}") },
-                    onClick = { updateDice(dice);expanded = false  })
+
+            IconButton(onClick = { expanded = true }) {
+                Icon(Icons.Default.MoreVert, contentDescription = "Localized description")
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+
+            ) {
+                dices.forEach { dice ->
+                    DropdownMenuItem(
+                        text = { Text("${dice}") },
+                        onClick = { updateDice(dice);expanded = false  })
+
+
+                }
 
 
             }
-
-
         }
     }
-    return
+
 }
 
